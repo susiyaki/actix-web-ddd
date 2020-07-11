@@ -7,4 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "2.0.0"
+# サーバ
+actix-web = "3.0.0-alpha.3"
+actix-rt = "1.1.1"
+# ホットリロード
+listenfd = "0.3"
+# JSONデータのハンドリング
+serde = "1.0"
+serde_json = "1.0"
