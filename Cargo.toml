@@ -15,3 +15,5 @@ listenfd = "0.3"
 # JSONデータのハンドリング
 serde = "1.0"
 serde_json = "1.0"
+# ログ表示
+env_logger = "0.7.1"
