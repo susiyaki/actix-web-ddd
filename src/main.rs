@@ -1,3 +1,4 @@
+mod todos;
 use actix_web::middleware::Logger;
 use actix_web::{App, HttpServer};
 
@@ -6,8 +7,12 @@ use actix_web::{App, HttpServer};
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
 
-    HttpServer::new(|| App::new().wrap(Logger::default()))
-        .bind("127.0.0.1:3000")?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .configure(todos::init_routes)
+            .wrap(Logger::default())
+    })
+    .bind("127.0.0.1:3000")?
+    .run()
+    .await
 }
