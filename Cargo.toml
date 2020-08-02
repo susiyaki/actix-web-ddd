@@ -10,10 +10,23 @@ edition = "2018"
 # サーバ
 actix-web = "3.0.0-alpha.3"
 actix-rt = "1.1.1"
-# ホットリロード
+# systemfdでの監視があった場合、そちらの設定でサーバを起動する
 listenfd = "0.3"
-# JSONデータのハンドリング
+# データ整形
 serde = "1.0"
 serde_json = "1.0"
 # ログ表示
 env_logger = "0.7.1"
+# ORM mapper
+diesel = { version = "1.4", features = ["postgres", "r2d2", "uuid", "chrono"] }
+diesel_migrations = "1.4"
+# uuidの生成
+uuid = { version = "0.6", features = ["serde", "v4"] }
+# 日時を扱う
+chrono = { version = "0.4", features = ["serde"] }
+# データベース接続プールのハンドリング
+r2d2 = "0.8"
+# dotenvを読み取る
+dotenv = "0.11"
+# グローバル変数の初期化を非同期でできるようにする
+lazy_static = "1.4"

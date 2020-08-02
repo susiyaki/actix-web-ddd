@@ -1,19 +1,40 @@
-mod todos;
-use actix_web::middleware::Logger;
-use actix_web::{App, HttpServer};
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate diesel_migrations;
 
-// サーバを3000番ポートで起動
+use actix_web::{middleware, App, HttpServer};
+use dotenv::dotenv;
+use listenfd::ListenFd;
+use std::env;
+
+mod db;
+mod error_handler;
+mod schema;
+mod todos;
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=info");
-    env_logger::init();
+    dotenv().ok();
+    db::init();
 
-    HttpServer::new(|| {
+    let mut listenfd = ListenFd::from_env();
+    let mut server = HttpServer::new(|| {
         App::new()
             .configure(todos::init_routes)
-            .wrap(Logger::default())
-    })
-    .bind("127.0.0.1:3000")?
-    .run()
-    .await
+            .wrap(middleware::Logger::default())
+    });
+
+    env_logger::init();
+
+    server = match listenfd.take_tcp_listener(0)? {
+        Some(listener) => server.listen(listener)?,
+        None => {
+            let host = env::var("HOST").expect("Please set host in .env");
+            let port = env::var("PORT").expect("Please set port in .env");
+            server.bind(format!("{}:{}", host, port))?
+        }
+    };
+
+    server.run().await
 }
