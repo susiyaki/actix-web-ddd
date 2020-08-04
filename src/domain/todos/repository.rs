@@ -1,26 +1,8 @@
 use crate::db;
+use crate::domain::todos::{Todo, Todos};
 use crate::error_handler::CustomError;
 use crate::schema::todos;
 use diesel::prelude::*;
-use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize, AsChangeset, Insertable)]
-#[table_name = "todos"]
-pub struct Todo {
-    pub title: String,
-    pub description: String,
-    pub done: bool,
-}
-
-// id採番後の構造体, Queryableなのでクエリを書ける
-#[derive(Serialize, Deserialize, Queryable, Insertable)]
-#[table_name = "todos"]
-pub struct Todos {
-    pub id: i32,
-    pub title: String,
-    pub description: String,
-    pub done: bool,
-}
 
 impl Todos {
     pub fn find_all() -> Result<Vec<Self>, CustomError> {
@@ -57,15 +39,5 @@ impl Todos {
         let conn = db::connection()?;
         let res = diesel::delete(todos::table.filter(todos::id.eq(id))).execute(&conn)?;
         Ok(res)
-    }
-}
-
-impl Todo {
-    fn from(todo: Todo) -> Todo {
-        Todo {
-            title: todo.title,
-            description: todo.description,
-            done: todo.done,
-        }
     }
 }

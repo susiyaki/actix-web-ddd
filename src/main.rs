@@ -8,10 +8,12 @@ use dotenv::dotenv;
 use listenfd::ListenFd;
 use std::env;
 
+mod app;
 mod db;
+mod domain;
 mod error_handler;
+mod routes;
 mod schema;
-mod todos;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -21,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     let mut listenfd = ListenFd::from_env();
     let mut server = HttpServer::new(|| {
         App::new()
-            .configure(todos::init_routes)
+            .configure(app::init)
             .wrap(middleware::Logger::default())
     });
 
